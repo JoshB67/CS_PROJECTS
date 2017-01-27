@@ -1,0 +1,265 @@
+import java.awt.List;
+import java.util.Iterator;
+
+
+/** 
+ * The MyHashSet API is similar to the Java Set interface. This
+ * collection is backed by a hash table.
+ */
+public class MyHashSet<T> implements Iterable<T> {
+
+
+	/** Unless otherwise specified, the table will start as
+	 * an array of this length.*/
+	/* STUDENTS:  DO NOT MODIFY THIS VALUE */
+	public final static int DEFAULT_INITIAL_CAPACITY = 4;
+
+	/** When the ratio of size/capacity reaches or exceeds this
+	 * value, it is time for the table to be expanded*/
+	/* STUDENTS:  DO NOT MODIFY THIS VALUE */
+	public final static double LOAD_FACTOR = 0.75;
+
+
+	/* STUDENTS:  LEAVE THIS PUBLIC FOR OUR TESTS */
+	public Node<T>[] table;
+	private int size;           // number of elements in the table
+
+
+
+
+	/* STUDENTS:  DO NOT ADD ANY OTHER INSTANCE VARIABLES
+	 * OR STATIC VARIABLES.  IF YOU DO, YOUR GRADE WILL BE 0.
+	 */
+
+
+
+
+
+	/* STUDENTS:  LEAVE THIS PUBLIC FOR OUR TESTS */
+	public static class Node<T> {
+		private T data;
+		public Node<T> next;   // STUDENTS:  Leave this public, too!
+
+		private Node(T data) {
+			this.data = data;
+			next = null;
+		}
+
+		@SuppressWarnings("unchecked")
+		private static <T> Node<T>[] makeArray(int size) {
+			return new Node[size];
+		}
+	}
+
+
+	/**
+	 * Initializes an empty table of the specified length (capacity).  
+	 * Relies on the static makeArray method of the Node class.
+	 * @param initialCapacity initial length (capacity) of table
+	 */
+	public MyHashSet(int initialCapacity) {
+		table = Node.makeArray(initialCapacity);
+		size = 0;
+	}
+
+
+	/**
+	 * Initializes an empty table of length equal to 
+	 * DEFAULT_INITIAL_CAPACITY
+	 */
+	public MyHashSet() {
+		table = Node.makeArray(DEFAULT_INITIAL_CAPACITY);
+		size = 0;
+	}
+
+
+	/**
+	 * Returns the number of elements stored in the table.
+	 * @return number of elements in the table
+	 */
+	public int getSize(){
+		return this.size;
+	}
+
+
+	/**
+	 * Returns the length of the table (the number of buckets).
+	 * @return length of the table (capacity)
+	 */
+	public int getCapacity(){
+		return table.length;
+	}
+
+
+	// private helper method to generate a bucket value.
+	private int generateBucketValue(T element){
+		int primeNumber = 337; // be sure to use the same prime! 337
+		int bucketValue = Math.abs(primeNumber * element.hashCode()) % getCapacity();
+		return bucketValue;
+	}
+
+
+	/** 
+	 * Looks for the specified element in the table.
+	 * 
+	 * @param element to be found
+	 * @return true if the element is in the table, false otherwise
+	 */
+	public boolean contains(T element) {
+		int bucketNum = generateBucketValue(element);
+		Node<T> bucket = table[bucketNum];
+		while (bucket != null){
+			if (bucket.data.equals(element)) {
+				return true;
+			}
+			bucket = bucket.next;
+		}
+		return false;
+	}
+
+
+	/** Adds the specified element to the collection.  If the element
+	 * is already in the collection, then this method should do nothing.
+	 * 
+	 * Important:  After adding this element to the table, consider
+	 * the ratio of size/capacity.  If this ratio is greater than or equal
+	 * to the LOAD_FACTOR then you must double the size of the table.
+	 * This will require re-hashing of all of the data!
+	 * 
+	 * @param element the element to be added to the collection
+	 */
+	public void add(T element) {
+		if(!(this.contains(element))){
+
+			if( (double)size / (table.length) >= LOAD_FACTOR){
+				rehasher();
+			}
+
+			Node<T> n = new Node<T>(element);
+			int index = this.generateBucketValue(element);
+			if(table[index] == null){
+				table[index] = n;
+				size++;
+			} else {
+				Node<T> temp = table[index];
+				while(temp.next != null && !(temp.data.equals(element))){
+					temp = temp.next;
+				}
+				if(!(temp.data.equals(element))){
+					temp.next = n;
+					size++;
+				}
+			}
+		}
+	}
+
+
+	// helper method
+	private void rehasher() {
+		Node<T>[] freshElem = Node.makeArray(2*table.length);
+		Node<T>[] backElem = table;
+		table = freshElem;
+		size = 0;
+
+		for(Node<T> x : backElem){
+			while(x != null){
+				this.add(x.data);
+				x = x.next;
+			}
+
+		}
+	}
+
+
+	/** Removes the specified element from the collection.  If the
+	 * element is not present then this method should do nothing.
+	 *
+	 * @param element the element to be removed
+	 */
+	public void remove(T element) {
+		if(!(this.contains(element))){
+			return;
+		}
+		for(int i = 0; i < table.length; i++ ){
+			if(table[i].equals(element)){
+				table[i] = table[i].next;
+				size--;
+			}
+			Node<T> tempNode = table[i];
+			Node<T> prevNode = table[i];
+			while(tempNode != null){
+				if(tempNode.equals(element)){
+					prevNode.next = tempNode.next;
+					size--;
+				} else {
+					prevNode = tempNode;
+					tempNode = tempNode.next;
+				}
+			}
+		}
+	}
+
+
+	/** Returns an Iterator that can be used to iterate over
+	 * all of the elements in the collection.
+	 */
+	public Iterator<T> iterator() {
+
+		return new Iterator<T>() {
+
+			
+			boolean callToNext = false;
+			int iteratedBucket = 0;		
+			int numOfElems = 0;
+			Node<T> processingElem = null;
+			int indexer = numOfElems + 1;
+			Node<T> iteratedBucketArray = table[iteratedBucket];
+
+
+			@Override
+			public boolean hasNext() {
+				return (indexer <= getSize());
+			}
+
+
+			@Override
+			public T next() {
+				if (hasNext()) {
+					if (processingElem == null || processingElem.next == null ) {
+
+						while (iteratedBucketArray == null) {
+							iteratedBucket++;
+						}
+
+						processingElem = iteratedBucketArray;
+					} if (processingElem.next != null){
+
+						processingElem = processingElem.next;
+					} else {
+
+						while (table[iteratedBucket++] == null);
+						processingElem = iteratedBucketArray;
+					}
+
+					callToNext = true;
+					numOfElems++;
+
+					return processingElem.data;
+				} else {
+					throw new IllegalStateException();
+				}
+			}
+
+
+			@Override
+			public void remove() {		
+				if (callToNext == true) {
+					MyHashSet.this.remove(processingElem.data);
+					callToNext = false;
+				} else {
+					throw new IllegalStateException();
+				}
+			}			
+		};
+	}
+}

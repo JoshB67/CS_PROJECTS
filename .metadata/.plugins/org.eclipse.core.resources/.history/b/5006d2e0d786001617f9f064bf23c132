@@ -1,0 +1,35 @@
+
+public class DigPow {
+
+
+	public static long digPow(int n, int p) {
+
+		long results = 0;
+
+		String num = String.valueOf(n);
+		for (int i = 0; i < num.length(); i++) {
+
+			long x = Character.getNumericValue(num.charAt(i));
+			results = (long) (results + Math.pow(x, p++));          
+		}
+			
+		
+		
+		long k = 0;
+
+		while(k < results){
+			k++;
+			
+			if(n*k == results){
+				break;
+			}
+		}
+		return k;
+		
+		
+	}
+
+	public static void main(String[] args) {
+		System.out.println(DigPow.digPow(46288, 3));
+	}
+}

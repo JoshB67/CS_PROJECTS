@@ -1,0 +1,145 @@
+package model;
+
+import java.util.Random;
+
+/**
+ * This class extends GameModel and implements the logic of the clear cell game. 
+ * We define an empty cell as BoardCell.EMPTY. An empty row is defined as one where 
+ * every cell corresponds to BoardCell.EMPTY.
+ * 
+ * @author Dept of Computer Science, UMCP
+ */
+
+
+//comment everything so your understand the logic
+
+
+public class ClearCellGameModel extends GameModel {
+
+	private int score;
+	private Random random;
+
+
+	/* Feel free to add any instance variables you may need */
+
+	/**
+	 * Defines a board with empty cells.  It relies on the
+	 * super class constructor to define the board.
+	 * @param maxRows
+	 * @param maxCols
+	 * @param random
+	 */
+	public ClearCellGameModel(int maxRows, int maxCols, Random random) {
+		super(maxRows, maxCols); //calls the super class method for maximum rows and cols
+		this.random = random;
+	}
+
+
+	/**
+	 * The game is over when the last board row (row with index board.length -1)
+	 * is different from empty row.
+	 */
+	public boolean isGameOver() {
+		return !(isRowEmpty(board.length - 1));
+
+		//return isEmpty(grid[grid.length - 1]);
+	}
+
+
+	public int getScore() {
+		return this.score; //gets score instance variable
+	}
+
+
+	/**
+	 * This method will attempt to insert a row of random BoardCell objects
+	 * if the last board row (row with index board.length -1) corresponds to
+	 * the empty row;  Otherwise no operation will take place.
+	 */
+	public void nextAnimationStep() {
+		if (!(this.isGameOver())) {
+
+			for (int row = this.getMaxRows() - 1; row > 0; row--) {
+				board[row] = board[row - 1];
+			}
+
+			board[0] = new BoardCell[getMaxCols()];
+
+			for(int col = 0; col < getMaxCols(); col++){
+				setBoardCell(0, col, BoardCell.getNonEmptyRandomBoardCell(random));
+			}
+		}
+	}
+
+
+	/**
+	 * This method will turn to BoardCell.EMPTY any cells immediately surrounding the
+	 * cell at position [rowIndex][colIndex] if and only if those surrounding 
+	 * cells have the same color as the selected cell.  The selected cell will
+	 * also be turned into a BoardCell.EMPTY.  If after processing the surrounding
+	 * cells any rows in the board are empty then those rows will collapse, moving non-empty
+	 * rows upward. If [rowIndex][colIndex] corresponds to an empty cell no 
+	 * action will take place. 
+	 * @throws IllegalArgumentException with message "Invalid row index" for invalid row
+	 * or "Invalid column index" for invalid column.  We check for row validity first.
+	 */
+	public void processCell(int rowIndex, int colIndex) { //check out of bounds <0
+
+
+		if(rowIndex < 0 || rowIndex >= getMaxRows())throw new IllegalArgumentException("Invalid row index");
+		if(colIndex < 0 || colIndex >= getMaxCols())throw new IllegalArgumentException("Invalid column index");
+
+
+		BoardCell color = board[rowIndex][colIndex];
+
+
+		for (int i = rowIndex - 1; i <= rowIndex + 1; i++) {
+			for (int k = colIndex - 1; k <= colIndex + 1; k++) {
+				if (inBounds(i,k) && color == board[i][k]) { //checks color and checks if in bounds
+					board[i][k] = BoardCell.EMPTY;
+					score++;
+				}
+			}
+		}
+
+
+		BoardCell[][] tempBoard = new BoardCell[getMaxRows()][getMaxCols()]; //board shallow copy
+
+
+		//creates a tempBoard copy to begin collapsing
+		for (int row = 0; row < getMaxRows(); row++) {
+			for (int col = 0; col < getMaxCols(); col++) {
+				tempBoard[row][col] = BoardCell.EMPTY; //no if-statement needed
+			}	
+		}
+
+
+		//checks if it is empty of that exact spot, if it is increment
+		int j = 0; 
+		for (int i = 0; i < getMaxRows(); i++) {
+			if (!isRowEmpty(i)) { //checks empty or not
+				tempBoard[j++] = board[i];
+			}
+		}
+		board = tempBoard;
+	}
+
+
+	private boolean inBounds(int x, int y){
+		return x >= 0 && x < getMaxRows() && y >= 0 && y < getMaxCols();
+	}
+
+
+	// returns true if the entire row is empty
+	// if wanted to check the  last row you just pass it the last row
+	private boolean isRowEmpty(int row) { //helper method
+		for (int col = 0; col < this.getMaxCols(); col++) {
+			if (board[row][col] != BoardCell.EMPTY) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.team.ccvs.ui.RepositoriesView">
+		<item value="" key="SelectedWorkingSet"/>
+		<item value="true" key="selectedSortingOrder"/>
+		<item value="" key="filterShowModules"/>
+		<item value="0" key="selectedOrderBy"/>
+	</section>
+	<section name="CommitWizard">
+		<item value="500" key="VWeight2"/>
+		<item value="500" key="VWeight1"/>
+		<item value="400" key="width"/>
+		<item value="false" key="ShowCompare"/>
+		<item value="525" key="height"/>
+	</section>
+	<section name="SharingWizard">
+	</section>
+	<section name="NewLocationWizard">
+		<item value="false" key="ConfigurationWizardMainPage.STORE_DONT_VALIDATE_ID"/>
+		<list key="ConfigurationWizardMainPage.STORE_USERNAME_ID">
+			<item value="jwhyte"/>
+		</list>
+		<list key="ConfigurationWizardMainPage.STORE_PATH_ID">
+			<item value="/afs/glue/class/fall2016/cmsc/132/0101/student/jwhyte"/>
+		</list>
+		<list key="ConfigurationWizardMainPage.STORE_HOSTNAME_ID">
+			<item value="grace.umd.edu"/>
+		</list>
+	</section>
+</section>

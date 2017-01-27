@@ -1,0 +1,161 @@
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * When you do a web search, the results page shows you a 
+ * <a href="http://searchengineland.com/anatomy-of-a-google-snippet-38357">snippet</a> 
+ * for each result, showing you search terms in context. For purposes of this project, a
+ * snippet is a subsequence of a document that contains all the search terms.
+ * 
+ * For this project, you will write code that, given a document (a sequence of
+ * words) and set of search terms, find the minimal length subsequence in the
+ * document that contains all of the search terms.
+ * 
+ * If there are multiple subsequences that have the same minimal length, you may
+ * return any one of them.
+ * 
+ */
+public class MinimumSnippet {
+
+	//getting this stuff to click
+	//you're creating an object of the class when you write a variable ad getting all the attributes that come with it
+
+
+	private int startingPos = 0;
+	private int endingPos = 0;
+	private int length = 0;
+	private Iterator it;
+
+	private int recentPositioInexnOfStr = 0;
+	private ArrayList<String> myList = new ArrayList<String>(3);
+	private Iterator<String> myIt;
+	private int documentIndex = 0;
+	private int termsIndex = 0;
+	private String theStrFound;
+	private int numOfMatches;
+	private int totalLengthOfSnippetSequence = 0;
+
+
+	//one snippet is this to that index, another is that to this index, goal
+	//is to compare all the partitions and find which is the smallest one.
+
+
+	/**
+	 * Compute minimum snippet.
+	 * 
+	 * Given a document (represented as an List<String>), and a set of terms
+	 * (represented as a List<String>), find the shortest subsequence of the
+	 * document that contains all of the terms.
+	 * 
+	 * This constructor should find the minimum snippet, and store information
+	 * about the snippet in fields so that the methods can be called to query
+	 * information about the snippet. All significant computation should be done
+	 * during construction.
+	 * 
+	 * @param document
+	 *            The Document is an Iterable<String>. Do not change the
+	 *            document. It is an Iterable, rather than a List, to allow for
+	 *            implementations where we scan very large documents that are
+	 *            not read entirely into memory. If you have problems figuring
+	 *            out how to solve it with the document represented as an
+	 *            Iterable, you may cast it to a List<String>; in all but a very
+	 *            small number of test cases, in will in fact be a List<String>.
+	 * 
+	 * @param terms
+	 *            The terms you need to look for. The terms will be unique
+	 *            (e.g., no term will be repeated), although you do not need to
+	 *            check for that. There should always be at least one term and 
+	 *            your code should
+	 *            throw an IllegalArgumentException if "terms" is
+	 *            empty.
+	 * 
+	 * 
+	 */
+	public MinimumSnippet(Iterable<String> document, List<String> terms) {
+		//this.document = document;
+
+
+		if(terms != null){
+			for(String target : terms){
+				for(String docWord : document ){
+					if(docWord.equals(target)){
+						myList.add(termsIndex, theStrFound);
+					}
+				}
+			}
+				
+				
+			}
+		}else{
+			throw new IllegalArgumentException("term is null");
+		}
+
+	}
+
+
+	/**
+	 * Returns whether or not all terms were found in the document. If all terms
+	 * were not found, then none of the other methods should be called.
+	 * 
+	 * @return whether all terms were found in the document.
+	 */
+	public boolean foundAllTerms() {
+
+		throw new UnsupportedOperationException("YOU MUST IMPLEMENT THIS!");
+
+	}
+
+	/**
+	 * Return the starting position of the snippet
+	 * 
+	 * @return the index in the document of the first element of the snippet
+	 */
+	public int getStartingPos() {
+		return this.startingPos;
+	}
+
+	/**
+	 * Return the ending position of the snippet
+	 * 
+	 * @return the index in the document of the last element of the snippet
+	 */
+	public int getEndingPos() {
+		return this.endingPos;
+	}
+
+	/**
+	 * Return total number of elements contained in the snippet.
+	 * 
+	 * @return
+	 */
+	public int getLength() {
+
+		//		int count = Lists.newArrayList(some_iterator).size();
+		//
+		//		int i = 0;
+		//		while(it.hasNext()){
+		//			i++;
+		//			it.next();
+		//
+		//		}
+		//		return i;
+		return this.length;
+	}
+
+	/**
+	 * Returns the position of one of the search terms as it appears in the original document
+	 * 
+	 * @param index index of the term in the original list of terms.  For example, if index
+	 * is 0 then the method will return the position (in the document) of the first search term.
+	 * If the index is 1, then the method will return the position (in the document) of the
+	 * second search term.  Etc.
+	 *  
+	 * @return position of the term in the document
+	 */
+	public int getPos(int index) {
+		return index;
+
+	}
+}

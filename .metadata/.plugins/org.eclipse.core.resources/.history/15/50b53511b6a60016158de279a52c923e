@@ -1,0 +1,238 @@
+package tests;
+
+import java.util.NoSuchElementException;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import searchTree.EmptyTree;
+import searchTree.SearchTreeMap;
+import searchTree.Tree;
+
+public class PublicTests{
+
+	
+	@Test
+	public void testEasyBSTSearch() {
+		Tree<Integer,String> t = EmptyTree.getInstance();
+		assertTrue(t.search(0) == null);
+		t = t.insert(5, "THIS IS 5");
+		assertEquals("THIS IS 5", t.search(5));
+		t = t.insert(8, "THIS IS 8");
+		assertEquals("THIS IS 8", t.search(8));
+	}
+
+	
+	@Test
+	public void testEmptySearchTreeMap() {
+		SearchTreeMap<String, Integer> s = new SearchTreeMap<String, Integer>();
+		assertEquals(0, s.size());
+		try {
+			assertEquals(null, s.getMin());
+			fail("Should have thrown NoSuchElementException");
+		} catch (NoSuchElementException e) {
+			assert true; // as intended
+		}
+		try {
+			assertEquals(null, s.getMax());
+			fail("Should have thrown NoSuchElementException");
+		} catch (NoSuchElementException e) {
+			assert true; // as intended
+		}
+		assertEquals(null, s.get("a"));
+	}
+
+
+	@Test
+	public void testBasicSearchTreeMapStuff() {
+
+		SearchTreeMap<Integer,String> s = new SearchTreeMap<Integer,String>();
+
+		assertEquals(0, s.size());
+		s.put(2, "Two");
+		s.put(1, "One");
+		s.put(3, "Three");
+		s.put(1, "OneSecondTime");
+
+		assertEquals(3, s.size());
+		assertEquals("OneSecondTime", s.get(1));
+		assertEquals("Two", s.get(2));
+		assertEquals("Three", s.get(3));
+		assertEquals(null, s.get(8));
+
+	}
+
+
+	@Test
+	public void testingInsert() {
+//		and the part for which the first test case is failing is if you simply 
+//		invoke insert on a Tree and ignore the return value, your code is almost certainly wrong.
+
+		Tree<Integer, String> peachTree = new EmptyTree<Integer, String>();
+
+		peachTree.insert(10, "Bart"); // key-value pairings
+//		peachTree.insert(39, "Homer");
+//		peachTree.insert(37, "Marge");
+//		peachTree.insert(2, "Maggie");
+
+		assertEquals("Bart" , peachTree.search(10));
+//		assertEquals("Homer" , peachTree.search(39));
+//		assertEquals("Marge" , peachTree.search(37));
+//		assertEquals("Maggie" , peachTree.search(2));
+
+	}
+	
+	
+	@Test
+	public void testingInsertAgain() {
+
+		Tree<Integer, String> peachTree = new EmptyTree<Integer, String>();
+
+		Tree<Integer, String> one = peachTree.insert(10, "Bart"); // key-value pairings
+		Tree<Integer, String> two = peachTree.insert(39, "Homer");
+		Tree<Integer, String> three = peachTree.insert(37, "Marge");
+		Tree<Integer, String> four = peachTree.insert(2, "Maggie");
+
+		assertEquals("Bart" , one.search(10));
+		assertEquals("Homer" , two.search(39));
+		assertEquals("Marge" , three.search(37));
+		assertEquals("Maggie" , four.search(2));
+
+	}
+
+
+	@Test public void testThatInsert() {
+		
+		Tree<String, Integer> appleTree = new EmptyTree<String, Integer>();
+		
+		Tree<String, Integer> actualOne = appleTree.insert("Bill", 60);
+		Tree<String, Integer> actualTwo = appleTree.insert("Sarah", 21);
+		Tree<String, Integer> actualThree = appleTree.insert("Soren", 38);
+		Tree<String, Integer> actualFour = appleTree.insert("Jack", 365);
+		
+		Integer expectedOne = 60;
+		Integer expectedTwo = 21;
+		Integer expectedThree = 38;
+		Integer expectedFour = 365;
+		
+		assertEquals(expectedOne, actualOne.search("Bill"));
+		assertEquals(expectedTwo, actualTwo.search("Sarah"));
+		assertEquals(expectedThree, actualThree.search("Soren"));
+		assertEquals(expectedFour, actualFour.search("Jack"));
+
+	}
+
+
+	@Test
+	public void testingtDelete() {
+		Tree<Character, Integer> tree = EmptyTree.getInstance();
+		
+		tree.delete('h');
+		
+		assertNull(tree.search('h'));
+		tree = tree.delete('o');
+		assertNull(tree.search('o'));
+	}
+	
+	
+	@Test
+	public void testingThatDelete() {
+
+		Tree<Integer, String> atree = EmptyTree.getInstance();
+		atree = atree.insert(4, "Fa");
+		atree.insert(2, "Re");
+		atree.insert(3, "Mi");
+		atree.insert(6, "La");
+		atree.insert(5, "So");
+		atree.delete(2);
+		try{
+			assertEquals(atree.min().intValue(), 3);
+			atree.delete(6);
+			assertEquals(atree.max().intValue(), 5);
+		}catch( Exception e){
+		}
+
+	}
+	
+	
+	@Test
+	public void testingDeleteAgain() {
+		
+		Tree<Integer, String> hollyTree = EmptyTree.getInstance();
+		Tree<Integer, String> WillowTree = EmptyTree.getInstance();
+		
+		hollyTree = hollyTree.insert(10, "Yep");
+		hollyTree = hollyTree.delete(10);
+		
+		assertEquals(hollyTree, WillowTree);
+	
+	}
+
+	
+	@Test
+	public void testDelete() {
+		
+		Tree<Character, Integer> tree = EmptyTree.getInstance();
+		tree = tree.delete('h');
+		assertNull(tree.search('h'));
+		tree = tree.delete('o');
+		assertNull(tree.search('o'));
+		
+	}
+
+
+	@Test
+	public void testingSize() {
+
+		Tree<Integer, String> myTree = EmptyTree.getInstance();
+		assertEquals(myTree.size(), 0);
+
+	}
+
+	
+	@Test
+	public void maxAndMixTest() {
+		Tree<Integer, String> atree = EmptyTree.getInstance();
+
+		atree = atree.insert(4, "Fa");
+		atree.insert(2, "Re");
+		atree.insert(3, "Mi");
+		atree.insert(6, "La");
+		atree.insert(5, "So");
+
+		try{
+			assertEquals(atree.max().intValue(), 6);
+			assertEquals(atree.min().intValue(), 2);
+		} catch( Exception e) {
+			System.out.println(e.getStackTrace());
+		}
+
+	}
+	
+	
+//	@Test
+//	public void minTestException() {
+//		Tree<Character, Integer> tree = EmptyTree.getInstance();
+//		try {
+//			tree.min();
+//			fail();
+//		} catch (TreeIsEmptyException e) {
+//			assertEquals(0, 0);
+//		}
+//	}
+//	
+	
+//	@Test
+//	public void testMin() {
+//		Tree<Character, Integer> zTree = EmptyTree.getInstance();
+//
+//		try {
+//			assertEquals('a', (char) zTree.min());
+//		} catch (TreeIsEmptyException e) {
+//			fail();
+//			// if an exception is thrown the test will fail
+//		}
+//	}
+
+	
+}

@@ -1,0 +1,69 @@
+
+public class Vehicle implements Cloneable {
+
+	private String description;
+	
+	public Vehicle(String description){
+		this.description = description;
+	}
+	
+	
+	public class Car extends Vehicle implements Cloneable{
+		private Engine engine;
+		
+		public Car(String description, Engine engine){
+			super(description);
+			this.engine = engine;
+		}
+		
+		
+		
+		public Engine getEngine() {
+			return engine;
+		}
+
+
+
+		public void setEngine(Engine engine) {
+			this.engine = engine;
+		}
+
+
+
+		public boolean equals(Object other){
+			if(other == this){
+				return true;
+			}if(other == null){
+				return false;
+			}if(!(other instanceof Car)){
+				return false;
+			}
+			
+			Car c = (Car)other;
+			
+			if( super.equals(c) && this.engine.equals( c.getEngine()) ){
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		
+		
+		
+		public Car clone(){
+
+			Car copy = null;
+			
+			try{
+				
+				copy = (Car)super.clone();
+				copy.engine = this.engine.clone();
+				
+			} catch(CloneNotSupportedException e);
+			return copy;
+		}
+	}
+
+}
+

@@ -1,0 +1,168 @@
+package searchTree;
+
+import java.util.Collection;
+
+/**
+ * This class represents a non-empty search tree. An instance of this class
+ * should contain:
+ * <ul>
+ * <li>A key
+ * <li>A value (that the key maps to)
+ * <li>A reference to a left Tree that contains key:value pairs such that the
+ * keys in the left Tree are less than the key stored in this tree node.
+ * <li>A reference to a right Tree that contains key:value pairs such that the
+ * keys in the right Tree are greater than the key stored in this tree node.
+ * </ul>
+ *  
+ */
+public class NonEmptyTree<K extends Comparable<K>, V> implements Tree<K, V> {
+
+	private K key;
+	private V value;
+	private Tree<K,V> left;
+	private Tree<K,V> right;
+
+
+	public NonEmptyTree(K key, V value, Tree<K,V> left, Tree<K,V> right) { 
+		this.key = key;
+		this.value = value;
+		this.left = left;
+		this.right = right;
+	}
+
+
+	/*
+	 * Method searches out for the key to find its corresponding value.
+	 * Are returns after comparisons the pair that is attached to this tree.
+	 * Otherwise the two keys are the same.
+	 */
+	public V search(K key) {
+
+		int findValueOfThisKey = key.compareTo(this.key);
+		
+		if (findValueOfThisKey == 0) {
+			return this.value;
+		} else if (findValueOfThisKey < 0) { 
+			return this.right.search(key); 
+		} else if (findValueOfThisKey > 0){ 
+			return this.left.search(key); 
+		} 
+			return this.value; 
+
+	}
+
+
+	/*
+	 * Method inserts with a key and value pair. This process builds recursively
+	 * until their is an empty tree for a new tree to form. This method does a check
+	 * to see if there are duplicates in which case an update happens.
+	 */
+	public NonEmptyTree<K, V> insert(K key, V value) {
+
+		int insertUpdateKey = this.key.compareTo(key);
+
+		if (insertUpdateKey == 0) {
+			this.value = value;
+		} else if (insertUpdateKey > 0) {
+			left = this.left.insert(key, value);
+		} else if (insertUpdateKey < 0) {
+			right = this.right.insert(key, value);
+		}
+		return this;
+
+	}
+
+
+	/*
+	 * This method deletes from the tree by searching out the location and
+	 * finding the smallest right subtree. After that then the greatest. 
+	 * Then both the value and key are changed for an altered tree. 
+	 * If no empty tree is found then this method returns "this" and
+	 * deduced as a leaf.
+	 * 
+	 */
+	public Tree<K, V> delete(K key) {
+
+		int deleteBindingKey = key.compareTo(this.key);
+
+		if (deleteBindingKey == 0) {
+			try {
+
+				this.value = this.search(left.max());
+				this.key = this.left.max();
+				left = left.delete(left.max());
+			} catch (TreeIsEmptyException except) {
+				return right;
+			}
+
+		} else if (deleteBindingKey < 0) {
+			this.right = right.delete(key);
+		} else {
+			this.left = left.delete(key);
+		}
+		return this;
+	}
+
+
+	// Method returns the 'K' type maximum key in the tree. 
+	public K max() throws TreeIsEmptyException {
+
+		try {
+			return right.max();
+		} catch (TreeIsEmptyException e) {
+			return this.key;
+		}
+
+	}
+
+
+	// Method returns the 'K' type minimum key in the tree. 
+	public K min() throws TreeIsEmptyException {
+
+		try {
+			return left.min();
+		} catch (TreeIsEmptyException e) {
+			return this.key;
+		}
+
+	}
+
+
+	/*
+	 *  Method return the number of keys attached to this tree by
+	 *  adding on 1 to the right and left subtree.
+	 * 
+	 */
+	public int size() {
+		return left.size() + right.size() + 1;
+	}
+
+
+	// Method adds all keys bound in this tree to the collection c.
+	public void addKeysToCollection(Collection<K> c) {
+
+		this.left.addKeysToCollection(c);
+		this.right.addKeysToCollection(c);
+		c.add(this.key);
+
+	}
+
+
+	/*
+	 *  This Method, by a recursive reference by the constructor returns a Tree containing
+	 *  all entries. Most importantly is that tree is capped by fromKey and toKey.
+	 * 
+	 */
+	public Tree<K,V> subTree(K fromKey, K toKey) {
+
+		if (fromKey.compareTo(this.key) < 0) {
+			return right.subTree(fromKey, toKey);
+		} if (toKey.compareTo(this.key) > 0) {
+			return left.subTree(fromKey, toKey);
+		} else {
+			return new NonEmptyTree<K,V>(this.key, this.value, left.subTree(fromKey, toKey), right.subTree(fromKey, toKey));
+		}
+	}
+
+	
+}

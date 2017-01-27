@@ -1,0 +1,11 @@
+# Submit server .submit file for
+#  Course CMSC132
+#  Project 9 Hash Table: 9 Hash Table
+
+courseName=CMSC132
+semester=201608
+projectNumber=9 Hash Table
+courseKey=c32133aa103a8b78
+authentication.type=ldap
+baseURL=https://submit.cs.umd.edu:443/fall2016
+submitURL=https://submit.cs.umd.edu:443/fall2016/eclipse/SubmitProjectViaEclipse
